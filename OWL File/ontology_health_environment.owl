@@ -1,0 +1,621 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://example.org/health#"
+     xml:base="http://example.org/health"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+    <owl:Ontology rdf:about="http://example.org/health"/>
+    
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <owl:ObjectProperty rdf:about="http://example.org/health#aImpact">
+        <rdfs:domain rdf:resource="http://example.org/health#Traitement"/>
+        <rdfs:range rdf:resource="http://example.org/health#ImpactEnvironnemental"/>
+        <rdfs:comment>Relie un traitement à son impact environnemental</rdfs:comment>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://example.org/health#presente">
+        <rdfs:domain rdf:resource="http://example.org/health#Maladie"/>
+        <rdfs:range rdf:resource="http://example.org/health#Symptome"/>
+        <rdfs:comment>Relie une maladie aux symptômes qu'elle présente</rdfs:comment>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://example.org/health#prescrit">
+        <rdfs:domain rdf:resource="http://example.org/health#Medecin"/>
+        <rdfs:range rdf:resource="http://example.org/health#Traitement"/>
+        <rdfs:comment>Relie un médecin aux traitements qu'il prescrit</rdfs:comment>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://example.org/health#traite">
+        <rdfs:domain rdf:resource="http://example.org/health#Traitement"/>
+        <rdfs:range rdf:resource="http://example.org/health#Maladie"/>
+        <rdfs:comment>Relie un traitement à la maladie qu'il traite</rdfs:comment>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://example.org/health#recoit">
+        <rdfs:domain rdf:resource="http://example.org/health#Patient"/>
+        <rdfs:range rdf:resource="http://example.org/health#Traitement"/>
+        <rdfs:comment>Relie un patient aux traitements qu'il reçoit</rdfs:comment>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://example.org/health#diagnostiquePour">
+        <rdfs:domain rdf:resource="http://example.org/health#Patient"/>
+        <rdfs:range rdf:resource="http://example.org/health#Maladie"/>
+        <rdfs:comment>Relie un patient aux maladies diagnostiquées</rdfs:comment>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://example.org/health#utilise">
+        <rdfs:domain rdf:resource="http://example.org/health#Traitement"/>
+        <rdfs:range rdf:resource="http://example.org/health#Medicament"/>
+        <rdfs:comment>Relie un traitement aux médicaments utilisés</rdfs:comment>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://example.org/health#travailleDans">
+        <rdfs:domain rdf:resource="http://example.org/health#Medecin"/>
+        <rdfs:range rdf:resource="http://example.org/health#Etablissement"/>
+        <rdfs:comment>Relie un médecin à son établissement de travail</rdfs:comment>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://example.org/health#seSoigneDans">
+        <rdfs:domain rdf:resource="http://example.org/health#Patient"/>
+        <rdfs:range rdf:resource="http://example.org/health#Etablissement"/>
+        <rdfs:comment>Relie un patient à son établissement de soins</rdfs:comment>
+    </owl:ObjectProperty>
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <!-- Propriétés communes pour Utilisateur -->
+    <owl:DatatypeProperty rdf:about="http://example.org/health#nom">
+        <rdfs:domain rdf:resource="http://example.org/health#Utilisateur"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#prenom">
+        <rdfs:domain rdf:resource="http://example.org/health#Utilisateur"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#dateNaissance">
+        <rdfs:domain rdf:resource="http://example.org/health#Utilisateur"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#date"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#sexe">
+        <rdfs:domain rdf:resource="http://example.org/health#Utilisateur"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#email">
+        <rdfs:domain rdf:resource="http://example.org/health#Utilisateur"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#telephone">
+        <rdfs:domain rdf:resource="http://example.org/health#Utilisateur"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#adresse">
+        <rdfs:domain rdf:resource="http://example.org/health#Utilisateur"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <!-- Propriétés spécifiques à Patient -->
+    <owl:DatatypeProperty rdf:about="http://example.org/health#numeroSecuriteSociale">
+        <rdfs:domain rdf:resource="http://example.org/health#Patient"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#IMC">
+        <rdfs:domain rdf:resource="http://example.org/health#Patient"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#groupeSanguin">
+        <rdfs:domain rdf:resource="http://example.org/health#Patient"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#allergies">
+        <rdfs:domain rdf:resource="http://example.org/health#Patient"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <!-- Propriétés spécifiques à Medecin -->
+    <owl:DatatypeProperty rdf:about="http://example.org/health#numeroOrdre">
+        <rdfs:domain rdf:resource="http://example.org/health#Medecin"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#specialite">
+        <rdfs:domain rdf:resource="http://example.org/health#Medecin"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#anneesExperience">
+        <rdfs:domain rdf:resource="http://example.org/health#Medecin"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+    </owl:DatatypeProperty>
+
+    <!-- Propriétés pour Maladie -->
+    <owl:DatatypeProperty rdf:about="http://example.org/health#nomMaladie">
+        <rdfs:domain rdf:resource="http://example.org/health#Maladie"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#codeCIM10">
+        <rdfs:domain rdf:resource="http://example.org/health#Maladie"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#gravite">
+        <rdfs:domain rdf:resource="http://example.org/health#Maladie"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#tauxMortalite">
+        <rdfs:domain rdf:resource="http://example.org/health#Maladie"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#contagieuse">
+        <rdfs:domain rdf:resource="http://example.org/health#Maladie"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    </owl:DatatypeProperty>
+
+    <!-- Propriétés pour Symptome -->
+    <owl:DatatypeProperty rdf:about="http://example.org/health#nomSymptome">
+        <rdfs:domain rdf:resource="http://example.org/health#Symptome"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#intensite">
+        <rdfs:domain rdf:resource="http://example.org/health#Symptome"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#dureeSymptome">
+        <rdfs:domain rdf:resource="http://example.org/health#Symptome"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+    </owl:DatatypeProperty>
+
+    <!-- Propriétés pour Traitement -->
+    <owl:DatatypeProperty rdf:about="http://example.org/health#nomTraitement">
+        <rdfs:domain rdf:resource="http://example.org/health#Traitement"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#cout">
+        <rdfs:domain rdf:resource="http://example.org/health#Traitement"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#duree">
+        <rdfs:domain rdf:resource="http://example.org/health#Traitement"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#efficacite">
+        <rdfs:domain rdf:resource="http://example.org/health#Traitement"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#dateDebut">
+        <rdfs:domain rdf:resource="http://example.org/health#Traitement"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#date"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#dateFin">
+        <rdfs:domain rdf:resource="http://example.org/health#Traitement"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#date"/>
+    </owl:DatatypeProperty>
+
+    <!-- Propriétés pour Medicament -->
+    <owl:DatatypeProperty rdf:about="http://example.org/health#nomMedicament">
+        <rdfs:domain rdf:resource="http://example.org/health#Medicament"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#dosage">
+        <rdfs:domain rdf:resource="http://example.org/health#Medicament"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#forme">
+        <rdfs:domain rdf:resource="http://example.org/health#Medicament"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#fabricant">
+        <rdfs:domain rdf:resource="http://example.org/health#Medicament"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#effetsSecondaires">
+        <rdfs:domain rdf:resource="http://example.org/health#Medicament"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <!-- Propriétés pour ImpactEnvironnemental -->
+    <owl:DatatypeProperty rdf:about="http://example.org/health#scoreCarbone">
+        <rdfs:domain rdf:resource="http://example.org/health#ImpactEnvironnemental"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#consommationEau">
+        <rdfs:domain rdf:resource="http://example.org/health#ImpactEnvironnemental"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#dechets">
+        <rdfs:domain rdf:resource="http://example.org/health#ImpactEnvironnemental"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#recyclable">
+        <rdfs:domain rdf:resource="http://example.org/health#ImpactEnvironnemental"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#boolean"/>
+    </owl:DatatypeProperty>
+
+    <!-- Propriétés pour Etablissement -->
+    <owl:DatatypeProperty rdf:about="http://example.org/health#nomEtablissement">
+        <rdfs:domain rdf:resource="http://example.org/health#Etablissement"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#adresseEtablissement">
+        <rdfs:domain rdf:resource="http://example.org/health#Etablissement"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#capacite">
+        <rdfs:domain rdf:resource="http://example.org/health#Etablissement"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#certifications">
+        <rdfs:domain rdf:resource="http://example.org/health#Etablissement"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // CLASSE 1: UTILISATEUR (avec 2 sous-classes: Patient, Medecin)
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <owl:Class rdf:about="http://example.org/health#Utilisateur">
+        <rdfs:comment>Classe parent représentant tout utilisateur du système de santé</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#Patient">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Utilisateur"/>
+        <rdfs:comment>Patient recevant des soins médicaux</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#Medecin">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Utilisateur"/>
+        <rdfs:comment>Médecin prescrivant des traitements</rdfs:comment>
+    </owl:Class>
+
+    <!-- Sous-classes de Medecin -->
+    <owl:Class rdf:about="http://example.org/health#Generaliste">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Medecin"/>
+        <rdfs:comment>Médecin généraliste</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#Cardiologue">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Medecin"/>
+        <rdfs:comment>Médecin spécialisé en cardiologie</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#Pneumologue">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Medecin"/>
+        <rdfs:comment>Médecin spécialisé en pneumologie</rdfs:comment>
+    </owl:Class>
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // CLASSE 2: MALADIE (avec au moins 2 sous-classes)
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <owl:Class rdf:about="http://example.org/health#Maladie">
+        <rdfs:comment>Représente une pathologie ou condition médicale</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#MaladieChronique">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Maladie"/>
+        <rdfs:comment>Maladie de longue durée nécessitant un traitement continu</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#MaladieAigue">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Maladie"/>
+        <rdfs:comment>Maladie de courte durée avec début rapide</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#MaladieInfectieuse">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Maladie"/>
+        <rdfs:comment>Maladie causée par un agent pathogène</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#MaladieCardiovasculaire">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Maladie"/>
+        <rdfs:comment>Maladie affectant le cœur et les vaisseaux sanguins</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#MaladieRespiratoire">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Maladie"/>
+        <rdfs:comment>Maladie affectant le système respiratoire</rdfs:comment>
+    </owl:Class>
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // CLASSE 3: SYMPTOME (avec au moins 2 sous-classes)
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <owl:Class rdf:about="http://example.org/health#Symptome">
+        <rdfs:comment>Représente un symptôme médical observable</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#SymptomeRespiratoire">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Symptome"/>
+        <rdfs:comment>Symptôme affectant la respiration (toux, dyspnée, etc.)</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#SymptomeDigestif">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Symptome"/>
+        <rdfs:comment>Symptôme affectant le système digestif (nausées, vomissements, etc.)</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#SymptomeNeurologique">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Symptome"/>
+        <rdfs:comment>Symptôme affectant le système nerveux (céphalées, vertiges, etc.)</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#Douleur">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Symptome"/>
+        <rdfs:comment>Symptôme de douleur physique</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#Fievre">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Symptome"/>
+        <rdfs:comment>Élévation de la température corporelle</rdfs:comment>
+    </owl:Class>
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // CLASSE 4: TRAITEMENT (avec au moins 2 sous-classes)
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <owl:Class rdf:about="http://example.org/health#Traitement">
+        <rdfs:comment>Représente un traitement médical prescrit</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#TraitementMedicamenteux">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Traitement"/>
+        <rdfs:comment>Traitement basé sur l'administration de médicaments</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#Chirurgie">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Traitement"/>
+        <rdfs:comment>Traitement par intervention chirurgicale</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#Physiotherapie">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Traitement"/>
+        <rdfs:comment>Traitement par rééducation physique et exercices</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#Radiotherapie">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Traitement"/>
+        <rdfs:comment>Traitement par radiation ionisante</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#Psychotherapie">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Traitement"/>
+        <rdfs:comment>Traitement par thérapie psychologique</rdfs:comment>
+    </owl:Class>
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // CLASSE 5: MEDICAMENT (avec au moins 2 sous-classes)
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <owl:Class rdf:about="http://example.org/health#Medicament">
+        <rdfs:comment>Représente un médicament utilisé dans un traitement</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#Antibiotique">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Medicament"/>
+        <rdfs:comment>Médicament contre les infections bactériennes</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#AntiInflammatoire">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Medicament"/>
+        <rdfs:comment>Médicament réduisant l'inflammation</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#Analgesique">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Medicament"/>
+        <rdfs:comment>Médicament contre la douleur (antidouleur)</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#Antiviral">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Medicament"/>
+        <rdfs:comment>Médicament contre les infections virales</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#Anticoagulant">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Medicament"/>
+        <rdfs:comment>Médicament empêchant la coagulation du sang</rdfs:comment>
+    </owl:Class>
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // CLASSE 6: IMPACTENVIRONNEMENTAL (avec au moins 2 sous-classes)
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <owl:Class rdf:about="http://example.org/health#ImpactEnvironnemental">
+        <rdfs:comment>Représente l'impact environnemental d'un traitement</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#ImpactFaible">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#ImpactEnvironnemental"/>
+        <rdfs:comment>Impact environnemental faible (score carbone &lt; 5)</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#ImpactModere">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#ImpactEnvironnemental"/>
+        <rdfs:comment>Impact environnemental modéré (score carbone entre 5 et 15)</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#ImpactEleve">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#ImpactEnvironnemental"/>
+        <rdfs:comment>Impact environnemental élevé (score carbone &gt; 15)</rdfs:comment>
+    </owl:Class>
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // CLASSE 7: ETABLISSEMENT (avec au moins 2 sous-classes)
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <owl:Class rdf:about="http://example.org/health#Etablissement">
+        <rdfs:comment>Représente un établissement de santé</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#Hopital">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Etablissement"/>
+        <rdfs:comment>Hôpital public ou privé offrant des soins complets</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#Clinique">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Etablissement"/>
+        <rdfs:comment>Clinique privée spécialisée</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#CabinetMedical">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Etablissement"/>
+        <rdfs:comment>Cabinet médical pour consultations</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#Pharmacie">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Etablissement"/>
+        <rdfs:comment>Pharmacie pour la délivrance de médicaments</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#Laboratoire">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Etablissement"/>
+        <rdfs:comment>Laboratoire d'analyses médicales</rdfs:comment>
+    </owl:Class>
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // CLASSE 8: EXAMEN (nouvelle classe avec au moins 2 sous-classes)
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <owl:Class rdf:about="http://example.org/health#Examen">
+        <rdfs:comment>Représente un examen médical ou diagnostic</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#ExamenBiologique">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Examen"/>
+        <rdfs:comment>Examen de laboratoire (prise de sang, analyse d'urine, etc.)</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#ExamenImagerie">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Examen"/>
+        <rdfs:comment>Examen d'imagerie médicale (radiographie, IRM, scanner, etc.)</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#ExamenClinique">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Examen"/>
+        <rdfs:comment>Examen physique réalisé par le médecin</rdfs:comment>
+    </owl:Class>
+
+    <owl:Class rdf:about="http://example.org/health#ExamenFonctionnel">
+        <rdfs:subClassOf rdf:resource="http://example.org/health#Examen"/>
+        <rdfs:comment>Examen évaluant une fonction (ECG, spirométrie, etc.)</rdfs:comment>
+    </owl:Class>
+
+    <!-- Propriétés d'objet supplémentaires pour Examen -->
+    <owl:ObjectProperty rdf:about="http://example.org/health#subit">
+        <rdfs:domain rdf:resource="http://example.org/health#Patient"/>
+        <rdfs:range rdf:resource="http://example.org/health#Examen"/>
+        <rdfs:comment>Relie un patient aux examens qu'il subit</rdfs:comment>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://example.org/health#demande">
+        <rdfs:domain rdf:resource="http://example.org/health#Medecin"/>
+        <rdfs:range rdf:resource="http://example.org/health#Examen"/>
+        <rdfs:comment>Relie un médecin aux examens qu'il demande</rdfs:comment>
+    </owl:ObjectProperty>
+
+    <owl:ObjectProperty rdf:about="http://example.org/health#aide_diagnostiquer">
+        <rdfs:domain rdf:resource="http://example.org/health#Examen"/>
+        <rdfs:range rdf:resource="http://example.org/health#Maladie"/>
+        <rdfs:comment>Relie un examen à la maladie qu'il aide à diagnostiquer</rdfs:comment>
+    </owl:ObjectProperty>
+
+    <!-- Propriétés de données pour Examen -->
+    <owl:DatatypeProperty rdf:about="http://example.org/health#nomExamen">
+        <rdfs:domain rdf:resource="http://example.org/health#Examen"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#dateExamen">
+        <rdfs:domain rdf:resource="http://example.org/health#Examen"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#date"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#resultat">
+        <rdfs:domain rdf:resource="http://example.org/health#Examen"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+
+    <owl:DatatypeProperty rdf:about="http://example.org/health#coutExamen">
+        <rdfs:domain rdf:resource="http://example.org/health#Examen"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    </owl:DatatypeProperty>
+
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 4.5.29.2024-05-13T12:11:03Z) https://github.com/owlcs/owlapi -->

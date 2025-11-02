@@ -1,0 +1,839 @@
+<!-- ontology_app/templates/index.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Système de Santé et Environnement</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container { max-width: 1400px; margin: 0 auto; }
+        
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .header h1 { color: #667eea; font-size: 2.5em; margin-bottom: 10px; }
+        .header p { color: #666; font-size: 1.1em; }
+        .eco-badge {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .stat-card h4 { font-size: 2em; color: #667eea; margin-bottom: 5px; }
+        .stat-card p { font-size: 0.9em; color: #666; }
+        
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            border: none;
+            background: white;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-weight: 600;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        
+        .card h2 { color: #667eea; margin-bottom: 20px; font-size: 1.5em; }
+        
+        .form-group { margin-bottom: 15px; }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 600;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        textarea { resize: vertical; min-height: 80px; }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            width: 100%;
+            font-weight: 600;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        
+        .result-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .result-item.eco {
+            border-left-color: #10b981;
+            background: #ecfdf5;
+        }
+        
+        .impact-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .impact-faible { background: #d1fae5; color: #065f46; }
+        .impact-modere { background: #fef3c7; color: #92400e; }
+        .impact-eleve { background: #fee2e2; color: #991b1b; }
+        
+        .loading { text-align: center; padding: 20px; color: #667eea; }
+        
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: 1fr; }
+            .header h1 { font-size: 1.8em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 Système de Santé et Environnement</h1>
+            <p>Connecter Patients, Maladies, Traitements et Impact Écologique</p>
+            <div class="eco-badge">🌍 Aide à la Décision Médicale Durable</div>
+        </div>
+
+        <div class="stats" id="stats">
+            <div class="stat-card"><h4 id="patientCount">0</h4><p>Patients</p></div>
+            <div class="stat-card"><h4 id="medecinCount">0</h4><p>Médecins</p></div>
+            <div class="stat-card"><h4 id="maladieCount">0</h4><p>Maladies</p></div>
+            <div class="stat-card"><h4 id="traitementCount">0</h4><p>Traitements</p></div>
+            <div class="stat-card"><h4 id="ecoCount">0</h4><p>Éco-responsables</p></div>
+            <div class="stat-card"><h4 id="impactMoyen">0</h4><p>Score Carbone Moyen</p></div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('patients')">👤 Patients</button>
+            <button class="tab" onclick="switchTab('medecins')">👨‍⚕️ Médecins</button>
+            <button class="tab" onclick="switchTab('maladies')">🦠 Maladies</button>
+            <button class="tab" onclick="switchTab('traitements')">💊 Traitements</button>
+            <button class="tab" onclick="switchTab('diagnostics')">📋 Diagnostics</button>
+            <button class="tab" onclick="switchTab('eco')">🌱 Éco-responsable</button>
+            <button class="tab" onclick="switchTab('semantic')">🔮 Sémantique</button>
+        </div>
+
+        <!-- PATIENTS TAB -->
+        <div id="patients" class="tab-content active">
+            <div class="grid">
+                <div class="card">
+                    <h2>➕ Ajouter un Patient</h2>
+                    <form id="patientForm">
+                        <div class="form-group"><label>Nom</label><input type="text" id="patientNom" required></div>
+                        <div class="form-group"><label>Prénom</label><input type="text" id="patientPrenom" required></div>
+                        <div class="form-group"><label>Date de Naissance</label><input type="date" id="patientDateNaissance" required></div>
+                        <div class="form-group">
+                            <label>Sexe</label>
+                            <select id="patientSexe" required>
+                                <option value="">Sélectionner...</option>
+                                <option value="M">Masculin</option>
+                                <option value="F">Féminin</option>
+                                <option value="A">Autre</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>Email</label><input type="email" id="patientEmail" required></div>
+                        <div class="form-group"><label>Téléphone</label><input type="tel" id="patientTel"></div>
+                        <div class="form-group"><label>N° Sécurité Sociale</label><input type="text" id="patientSecu" required></div>
+                        <div class="form-group">
+                            <label>Groupe Sanguin</label>
+                            <select id="patientGroupe">
+                                <option value="">Sélectionner...</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn">Ajouter Patient</button>
+                    </form>
+                </div>
+                <div class="card"><h2>📊 Liste des Patients</h2><div id="patientList"></div></div>
+            </div>
+        </div>
+
+        <!-- MEDECINS TAB -->
+        <div id="medecins" class="tab-content">
+            <div class="grid">
+                <div class="card">
+                    <h2>➕ Ajouter un Médecin</h2>
+                    <form id="medecinForm">
+                        <div class="form-group"><label>Nom</label><input type="text" id="medecinNom" required></div>
+                        <div class="form-group"><label>Prénom</label><input type="text" id="medecinPrenom" required></div>
+                        <div class="form-group"><label>Date de Naissance</label><input type="date" id="medecinDateNaissance" required></div>
+                        <div class="form-group">
+                            <label>Sexe</label>
+                            <select id="medecinSexe" required>
+                                <option value="">Sélectionner...</option>
+                                <option value="M">Masculin</option>
+                                <option value="F">Féminin</option>
+                                <option value="A">Autre</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>Email</label><input type="email" id="medecinEmail" required></div>
+                        <div class="form-group"><label>Téléphone</label><input type="tel" id="medecinTelephone"></div>
+                        <div class="form-group">
+                            <label>Spécialité</label>
+                            <select id="medecinSpecialite" required>
+                                <option value="generaliste">Généraliste</option>
+                                <option value="cardiologue">Cardiologue</option>
+                                <option value="pneumologue">Pneumologue</option>
+                                <option value="autre">Autre</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>N° d'Ordre</label><input type="text" id="medecinOrdre" required></div>
+                        <div class="form-group"><label>Années d'Expérience</label><input type="number" id="medecinExperience" required></div>
+                        <button type="submit" class="btn">Ajouter Médecin</button>
+                    </form>
+                </div>
+                <div class="card"><h2>📊 Liste des Médecins</h2><div id="medecinList"></div></div>
+            </div>
+        </div>
+
+        <!-- MALADIES TAB -->
+        <div id="maladies" class="tab-content">
+            <div class="grid">
+                <div class="card">
+                    <h2>➕ Ajouter une Maladie</h2>
+                    <form id="maladieForm">
+                        <div class="form-group"><label>Nom de la Maladie</label><input type="text" id="maladieNom" required></div>
+                        <div class="form-group"><label>Code CIM-10</label><input type="text" id="maladieCIM"></div>
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select id="maladieType" required>
+                                <option value="chronique">Chronique</option>
+                                <option value="aigue">Aiguë</option>
+                                <option value="infectieuse">Infectieuse</option>
+                                <option value="cardiovasculaire">Cardiovasculaire</option>
+                                <option value="respiratoire">Respiratoire</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Gravité</label>
+                            <select id="maladieGravite" required>
+                                <option value="legere">Légère</option>
+                                <option value="moderee">Modérée</option>
+                                <option value="grave">Grave</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="maladieContagieuse"> Contagieuse</label>
+                        </div>
+                        <button type="submit" class="btn">Ajouter Maladie</button>
+                    </form>
+                </div>
+                <div class="card"><h2>📊 Liste des Maladies</h2><div id="maladieList"></div></div>
+            </div>
+        </div>
+
+        <!-- TRAITEMENTS TAB -->
+        <div id="traitements" class="tab-content">
+            <div class="grid">
+                <div class="card">
+                    <h2>➕ Ajouter un Traitement</h2>
+                    <form id="traitementForm">
+                        <div class="form-group"><label>Nom du Traitement</label><input type="text" id="traitementNom" required></div>
+                        <div class="form-group">
+                            <label>Type</label>
+                            <select id="traitementType" required>
+                                <option value="medicamenteux">Médicamenteux</option>
+                                <option value="chirurgie">Chirurgie</option>
+                                <option value="physiotherapie">Physiothérapie</option>
+                                <option value="radiotherapie">Radiothérapie</option>
+                                <option value="psychotherapie">Psychothérapie</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label>Maladie Traitée</label><select id="traitementMaladie" required></select></div>
+                        <div class="form-group"><label>Coût (€)</label><input type="number" step="0.01" id="traitementCout" required></div>
+                        <div class="form-group"><label>Durée (jours)</label><input type="number" id="traitementDuree" required></div>
+                        <div class="form-group"><label>Efficacité (%)</label><input type="number" step="0.1" max="100" id="traitementEfficacite" required></div>
+                        <div class="form-group"><label>Score Carbone (kg CO2)</label><input type="number" step="0.1" id="traitementCarbone" required></div>
+                        <button type="submit" class="btn">Ajouter Traitement</button>
+                    </form>
+                </div>
+                <div class="card"><h2>📊 Liste des Traitements</h2><div id="traitementList"></div></div>
+            </div>
+        </div>
+
+        <!-- DIAGNOSTICS TAB -->
+        <div id="diagnostics" class="tab-content">
+            <div class="card">
+                <h2>➕ Créer un Diagnostic</h2>
+                <form id="diagnosticForm">
+                    <div class="form-group"><label>Patient</label><select id="diagPatient" required></select></div>
+                    <div class="form-group"><label>Maladie</label><select id="diagMaladie" required></select></div>
+                    <div class="form-group"><label>Médecin</label><select id="diagMedecin" required></select></div>
+                    <div class="form-group"><label>Notes</label><textarea id="diagNotes"></textarea></div>
+                    <button type="submit" class="btn">Créer Diagnostic</button>
+                </form>
+            </div>
+            <div class="card"><h2>📋 Diagnostics Récents</h2><div id="diagnosticList"></div></div>
+        </div>
+
+        <!-- ECO TAB -->
+        <div id="eco" class="tab-content">
+            <div class="card">
+                <h2>🌱 Traitements Éco-responsables</h2>
+                <div class="form-group"><label>Score Carbone Maximum (kg CO2)</label><input type="number" step="0.1" id="maxCarbone" value="5.0"></div>
+                <div class="form-group">
+                    <label>Source de données:</label>
+                    <select id="dataSource">
+                        <option value="postgres">⚡ PostgreSQL (Rapide)</option>
+                        <option value="fuseki">🔮 Fuseki/SPARQL (Sémantique)</option>
+                    </select>
+                </div>
+                <button class="btn btn-secondary" onclick="loadEcoTraitements()">🔍 Rechercher</button>
+            </div>
+            <div class="card"><h2>✅ Résultats</h2><div id="ecoResults"></div></div>
+        </div>
+
+        <!-- SEMANTIC TAB -->
+        <div id="semantic" class="tab-content">
+            <div class="card">
+                <h2>🔮 Recherche Sémantique Avancée</h2>
+                <p style="color: #666; margin-bottom: 20px;">Raisonnement intelligent impossible avec SQL classique</p>
+                <div class="form-group">
+                    <label>Type de Recherche</label>
+                    <select id="semanticQueryType" onchange="setupSemanticQuery()">
+                        <option value="alternatives">🔄 Alternatives de Traitement</option>
+                        <option value="recommendation">⭐ Recommandation Intelligente</option>
+                    </select>
+                </div>
+                <div id="semanticParams"></div>
+                <button class="btn btn-secondary" onclick="executeSemanticQuery()">🔍 Recherche Sémantique</button>
+            </div>
+            <div class="card"><h2>✨ Résultats avec Raisonnement</h2><div id="semanticResults"></div></div>
+            <div class="card" style="background: #f0f9ff; border-left: 4px solid #3b82f6;">
+                <h3 style="color: #1e40af; margin-bottom: 10px;">💡 Pourquoi c'est puissant?</h3>
+                <div id="semanticExplanation"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API = '/api';
+        let data = { patients: [], medecins: [], maladies: [], traitements: [] };
+
+        async function api(endpoint, method = 'GET', body = null) {
+            const opts = { method, headers: { 'Content-Type': 'application/json' } };
+            if (body) opts.body = JSON.stringify(body);
+            const res = await fetch(`${API}${endpoint}`, opts);
+            const responseData = await res.json();
+            if (!res.ok) {
+                console.error('API Error:', responseData);
+                alert('Erreur: ' + JSON.stringify(responseData));
+            }
+            return responseData;
+        }
+
+        function switchTab(name) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById(name).classList.add('active');
+            if (name === 'diagnostics') loadSelects();
+            if (name === 'traitements') loadMaladiesSelect();
+            if (name === 'semantic') setupSemanticQuery();
+        }
+
+        async function loadStats() {
+            const stats = await api('/stats/');
+            document.getElementById('patientCount').textContent = stats.patients;
+            document.getElementById('medecinCount').textContent = stats.medecins;
+            document.getElementById('maladieCount').textContent = stats.maladies;
+            document.getElementById('traitementCount').textContent = stats.traitements;
+            document.getElementById('ecoCount').textContent = stats.traitements_eco;
+            document.getElementById('impactMoyen').textContent = stats.impact_moyen.toFixed(1);
+        }
+
+        async function loadAll() {
+            data.patients = await api('/patients/');
+            data.medecins = await api('/medecins/');
+            data.maladies = await api('/maladies/');
+            data.traitements = await api('/traitements/');
+            renderPatients();
+            renderMedecins();
+            renderMaladies();
+            renderTraitements();
+            loadStats();
+        }
+
+        function getImpactClass(score) {
+            if (score < 5) return 'impact-faible';
+            if (score <= 15) return 'impact-modere';
+            return 'impact-eleve';
+        }
+
+        function renderPatients() {
+            const list = document.getElementById('patientList');
+            list.innerHTML = data.patients.map(p => `
+                <div class="result-item">
+                    <strong>${p.prenom} ${p.nom}</strong>
+                    <br><small>Né(e) le: ${new Date(p.date_naissance).toLocaleDateString('fr-FR')}</small>
+                    <br><small>Groupe: ${p.groupe_sanguin || 'N/A'}</small>
+                </div>
+            `).join('') || '<p>Aucun patient</p>';
+        }
+
+        function renderMedecins() {
+            const list = document.getElementById('medecinList');
+            list.innerHTML = data.medecins.map(m => `
+                <div class="result-item">
+                    <strong>Dr. ${m.prenom} ${m.nom}</strong>
+                    <br><small>${m.specialite} - ${m.annees_experience} ans d'exp.</small>
+                </div>
+            `).join('') || '<p>Aucun médecin</p>';
+        }
+
+        function renderMaladies() {
+            const list = document.getElementById('maladieList');
+            list.innerHTML = data.maladies.map(m => `
+                <div class="result-item">
+                    <strong>${m.nom_maladie}</strong>
+                    <br><small>${m.type_maladie} - ${m.gravite}</small>
+                    ${m.contagieuse ? '<br><small>⚠️ Contagieuse</small>' : ''}
+                </div>
+            `).join('') || '<p>Aucune maladie</p>';
+        }
+
+        function renderTraitements() {
+            const list = document.getElementById('traitementList');
+            list.innerHTML = data.traitements.map(t => {
+                const score = t.impact_environnemental?.score_carbone || 0;
+                return `
+                <div class="result-item ${score <= 5 ? 'eco' : ''}">
+                    <strong>${t.nom_traitement}</strong>
+                    <span class="impact-badge ${getImpactClass(score)}">CO2: ${score} kg</span>
+                    <br><small>${t.type_traitement} - ${t.duree} jours</small>
+                    <br><small>Efficacité: ${t.efficacite}%</small>
+                </div>
+            `}).join('') || '<p>Aucun traitement</p>';
+        }
+
+        async function loadMaladiesSelect() {
+            const select = document.getElementById('traitementMaladie');
+            select.innerHTML = data.maladies.map(m => `<option value="${m.id}">${m.nom_maladie}</option>`).join('');
+        }
+
+        async function loadSelects() {
+            document.getElementById('diagPatient').innerHTML = data.patients.map(p => `<option value="${p.id}">${p.prenom} ${p.nom}</option>`).join('');
+            document.getElementById('diagMaladie').innerHTML = data.maladies.map(m => `<option value="${m.id}">${m.nom_maladie}</option>`).join('');
+            document.getElementById('diagMedecin').innerHTML = data.medecins.map(d => `<option value="${d.id}">Dr. ${d.prenom} ${d.nom}</option>`).join('');
+            loadDiagnostics();
+        }
+
+        async function loadDiagnostics() {
+            const diagnostics = await api('/diagnostics/');
+            const list = document.getElementById('diagnosticList');
+            list.innerHTML = diagnostics.results.map(d => `
+                <div class="result-item">
+                    <strong>${d.patient_nom}</strong> - ${d.maladie_nom}
+                    <br><small>Par: ${d.medecin_nom}</small>
+                    <br><small>${new Date(d.date_diagnostic).toLocaleDateString('fr-FR')}</small>
+                </div>
+            `).join('') || '<p>Aucun diagnostic</p>';
+        }
+
+        async function loadEcoTraitements() {
+            const max = document.getElementById('maxCarbone').value;
+            const source = document.getElementById('dataSource').value;
+            const results = document.getElementById('ecoResults');
+            
+            try {
+                let traitements;
+                if (source === 'fuseki') {
+                    const response = await api(`/traitements/eco_ontology/?score_max=${max}`);
+                    if (response.results && response.results.bindings) {
+                        traitements = response.results.bindings.map(binding => ({
+                            nom_traitement: binding.nomTraitement?.value,
+                            score_carbone: parseFloat(binding.scoreCarbone?.value || 0),
+                            efficacite: parseFloat(binding.efficacite?.value || 0)
+                        }));
+                    } else {
+                        traitements = [];
+                    }
+                    const sourceLabel = '<span style="background: #6366f1; color: white; padding: 5px 10px; border-radius: 5px; font-size: 0.9em;">🔮 SPARQL/Fuseki</span>';
+                    results.innerHTML = `<div style="margin-bottom: 15px;">Source: ${sourceLabel}</div>` + 
+                        traitements.map(t => `
+                            <div class="result-item eco">
+                                <strong>${t.nom_traitement}</strong>
+                                <span class="impact-badge impact-faible">✓ ${t.score_carbone} kg CO2</span>
+                                <br><small>Efficacité: ${t.efficacite}%</small>
+                            </div>
+                        `).join('') || '<p>Aucun traitement trouvé dans Fuseki.</p>';
+                } else {
+                    traitements = await api(`/traitements/eco_responsables/?score_max=${max}`);
+                    const sourceLabel = '<span style="background: #10b981; color: white; padding: 5px 10px; border-radius: 5px; font-size: 0.9em;">⚡ PostgreSQL</span>';
+                    results.innerHTML = `<div style="margin-bottom: 15px;">Source: ${sourceLabel}</div>` + 
+                        traitements.map(t => `
+                            <div class="result-item eco">
+                                <strong>${t.nom_traitement}</strong>
+                                <span class="impact-badge impact-faible">✓ ${t.impact_environnemental.score_carbone} kg CO2</span>
+                                <br><small>Pour: ${t.maladie_nom}</small>
+                                <br><small>Efficacité: ${t.efficacite}% - Coût: ${t.cout}€</small>
+                            </div>
+                        `).join('') || '<p>Aucun traitement trouvé</p>';
+                }
+            } catch (error) {
+                console.error('Erreur:', error);
+                results.innerHTML = '<p style="color: red;">❌ Erreur lors de la recherche.</p>';
+            }
+        }
+
+        function setupSemanticQuery() {
+            const queryType = document.getElementById('semanticQueryType').value;
+            const params = document.getElementById('semanticParams');
+            const explanation = document.getElementById('semanticExplanation');
+            
+            if (queryType === 'alternatives') {
+                params.innerHTML = `
+                    <div class="form-group">
+                        <label>Maladie</label>
+                        <select id="semanticMaladie">
+                            ${data.maladies.map(m => `<option value="${m.nom_maladie}">${m.nom_maladie}</option>`).join('')}
+                        </select>
+                    </div>
+                `;
+                explanation.innerHTML = `
+                    <p><strong>Raisonnement:</strong> Compare automatiquement tous les traitements pour la même maladie</p>
+                    <p><strong>Calcule:</strong> Différences d'impact écologique ET d'efficacité entre alternatives</p>
+                    <p><strong>PostgreSQL?</strong> ❌ Nécessiterait auto-jointure complexe avec calculs multiples</p>
+                    <p><strong>SPARQL?</strong> ✅ Une seule requête avec pattern matching naturel</p>
+                `;
+            } else if (queryType === 'recommendation') {
+                params.innerHTML = `
+                    <div class="form-group">
+                        <label>Maladie</label>
+                        <select id="semanticMaladie">
+                            ${data.maladies.map(m => `<option value="${m.nom_maladie}">${m.nom_maladie}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Score Carbone Maximum</label>
+                        <input type="number" step="0.1" id="semanticMaxScore" value="10">
+                    </div>
+                `;
+                explanation.innerHTML = `
+                    <p><strong>Raisonnement:</strong> Calcule ratio éco-efficacité (efficacité ÷ impact carbone)</p>
+                    <p><strong>Recommande:</strong> Meilleur équilibre entre efficacité clinique et durabilité</p>
+                    <p><strong>PostgreSQL?</strong> ⚠️ Possible mais moins élégant, sans contexte sémantique</p>
+                    <p><strong>SPARQL?</strong> ✅ Calculs inline avec contexte ontologique intégré</p>
+                `;
+            }
+        }
+
+        async function executeSemanticQuery() {
+            const queryType = document.getElementById('semanticQueryType').value;
+            const results = document.getElementById('semanticResults');
+            
+            results.innerHTML = '<div class="loading">⏳ Raisonnement sémantique en cours...</div>';
+            
+            try {
+                let response;
+                
+                if (queryType === 'alternatives') {
+                    const maladie = document.getElementById('semanticMaladie').value;
+                    response = await api(`/semantic/alternatives/?maladie=${encodeURIComponent(maladie)}`);
+                    displayAlternatives(response);
+                    
+                } else if (queryType === 'recommendation') {
+                    const maladie = document.getElementById('semanticMaladie').value;
+                    const maxScore = document.getElementById('semanticMaxScore').value;
+                    response = await api(`/semantic/recommendation/?maladie=${encodeURIComponent(maladie)}&max_score=${maxScore}`);
+                    displayRecommendations(response);
+                }
+                
+            } catch (error) {
+                console.error('Semantic query error:', error);
+                results.innerHTML = '<p style="color: red;">❌ Erreur. Vérifiez que Fuseki est actif et les données sont chargées.</p>';
+            }
+        }
+
+        function displayAlternatives(response) {
+            const results = document.getElementById('semanticResults');
+            
+            if (!response.results || !response.results.bindings.length) {
+                results.innerHTML = '<p>Aucune alternative trouvée. Assurez-vous d\'avoir plusieurs traitements pour cette maladie.</p>';
+                return;
+            }
+            
+            const bindings = response.results.bindings;
+            results.innerHTML = `
+                <h3>🔄 Comparaison Sémantique des Alternatives</h3>
+                ${bindings.map(b => `
+                    <div class="result-item" style="background: linear-gradient(to right, #f0fdf4, #dcfce7); border-left: 4px solid #16a34a;">
+                        <strong>✅ Alternative Plus Écologique:</strong>
+                        <br><span style="color: #15803d; font-size: 1.1em; font-weight: bold;">
+                            ${b.traitement2.value}
+                        </span>
+                        <br><small>Score CO2: ${parseFloat(b.score2.value).toFixed(1)} kg | Efficacité: ${parseFloat(b.efficacite2.value).toFixed(0)}%</small>
+                        
+                        <br><br><strong>❌ Au lieu de:</strong>
+                        <br><span style="color: #991b1b;">
+                            ${b.traitement1.value}
+                        </span>
+                        <br><small>Score CO2: ${parseFloat(b.score1.value).toFixed(1)} kg | Efficacité: ${parseFloat(b.efficacite1.value).toFixed(0)}%</small>
+                        
+                        <br><br><span style="background: #dcfce7; padding: 8px 12px; border-radius: 6px; display: inline-block; margin-top: 8px;">
+                            <strong>💚 Économie environnementale: ${parseFloat(b.scoreDiff.value).toFixed(1)} kg CO2</strong>
+                        </span>
+                    </div>
+                `).join('')}
+                <div style="margin-top: 20px; padding: 15px; background: #dbeafe; border-radius: 8px;">
+                    <strong>🧠 Puissance du Raisonnement SPARQL:</strong><br>
+                    Cette requête compare automatiquement TOUS les traitements pour la même maladie,
+                    calcule les différences d'impact ET d'efficacité, et les trie par pertinence.
+                    <br><br>
+                    <strong>En SQL?</strong> Nécessiterait une auto-jointure sur la table traitements,
+                    plusieurs JOINs avec impacts, calculs dans des sous-requêtes, et logique complexe de filtrage.
+                    <br><br>
+                    <strong>En SPARQL?</strong> Pattern matching naturel du graphe de connaissances! ✨
+                </div>
+            `;
+        }
+
+        function displayRecommendations(response) {
+            const results = document.getElementById('semanticResults');
+            
+            if (!response.results || !response.results.bindings.length) {
+                results.innerHTML = '<p>Aucune recommandation trouvée avec ces critères.</p>';
+                return;
+            }
+            
+            const bindings = response.results.bindings;
+            results.innerHTML = `
+                <h3>⭐ Top Recommandations par Ratio Éco-Efficacité</h3>
+                <p style="color: #666; margin-bottom: 15px;">Ratio = Efficacité Clinique ÷ Impact Environnemental (plus élevé = meilleur)</p>
+                ${bindings.map((b, index) => {
+                    const ratio = parseFloat(b.ecoEfficiencyRatio.value);
+                    const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '⭐';
+                    const bgColor = index === 0 ? '#f0fdf4' : index === 1 ? '#fef3c7' : index === 2 ? '#fee2e2' : '#f8f9fa';
+                    return `
+                    <div class="result-item" style="background: ${bgColor};">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 2em;">${medal}</span>
+                            <div style="flex: 1;">
+                                <strong style="font-size: 1.2em;">${b.traitement.value}</strong>
+                                <span class="impact-badge impact-faible">
+                                    Ratio: ${ratio.toFixed(2)}
+                                </span>
+                            </div>
+                        </div>
+                        <div style="margin-top: 10px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                            <div>
+                                <small style="color: #666;">Score CO2</small>
+                                <br><strong>${parseFloat(b.score.value).toFixed(1)} kg</strong>
+                            </div>
+                            <div>
+                                <small style="color: #666;">Efficacité</small>
+                                <br><strong>${parseFloat(b.efficacite.value).toFixed(0)}%</strong>
+                            </div>
+                            <div>
+                                <small style="color: #666;">Coût</small>
+                                <br><strong>${parseFloat(b.cout.value).toFixed(2)}€</strong>
+                            </div>
+                        </div>
+                    </div>
+                `}).join('')}
+                <div style="margin-top: 20px; padding: 15px; background: #dbeafe; border-radius: 8px;">
+                    <strong>🧠 Intelligence Sémantique:</strong><br>
+                    Le système calcule un <strong>ratio éco-efficacité</strong> qui combine deux métriques importantes:
+                    <br>• <strong>Efficacité clinique</strong> (> 70% minimum)
+                    <br>• <strong>Impact environnemental</strong> (filtré par votre seuil)
+                    <br><br>
+                    Ce raisonnement multi-critères identifie le <strong>meilleur compromis</strong> entre
+                    santé du patient et santé de la planète 🌍
+                    <br><br>
+                    <strong>Avantage SPARQL:</strong> La requête intègre naturellement le contexte
+                    ontologique (relations maladie-traitement-impact) et permet des calculs inline
+                    avec une syntaxe expressive et lisible.
+                </div>
+            `;
+        }
+
+        // Form handlers
+        document.getElementById('patientForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await api('/patients/', 'POST', {
+                nom: document.getElementById('patientNom').value,
+                prenom: document.getElementById('patientPrenom').value,
+                date_naissance: document.getElementById('patientDateNaissance').value,
+                sexe: document.getElementById('patientSexe').value,
+                email: document.getElementById('patientEmail').value,
+                telephone: document.getElementById('patientTel').value,
+                numero_securite_sociale: document.getElementById('patientSecu').value,
+                groupe_sanguin: document.getElementById('patientGroupe').value,
+            });
+            e.target.reset();
+            loadAll();
+        });
+
+        document.getElementById('medecinForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await api('/medecins/', 'POST', {
+                nom: document.getElementById('medecinNom').value,
+                prenom: document.getElementById('medecinPrenom').value,
+                date_naissance: document.getElementById('medecinDateNaissance').value,
+                sexe: document.getElementById('medecinSexe').value,
+                email: document.getElementById('medecinEmail').value,
+                telephone: document.getElementById('medecinTelephone').value || '',
+                adresse: '',
+                specialite: document.getElementById('medecinSpecialite').value,
+                numero_ordre: document.getElementById('medecinOrdre').value,
+                annees_experience: parseInt(document.getElementById('medecinExperience').value),
+            });
+            e.target.reset();
+            loadAll();
+        });
+
+        document.getElementById('maladieForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await api('/maladies/', 'POST', {
+                nom_maladie: document.getElementById('maladieNom').value,
+                code_cim10: document.getElementById('maladieCIM').value,
+                type_maladie: document.getElementById('maladieType').value,
+                gravite: document.getElementById('maladieGravite').value,
+                contagieuse: document.getElementById('maladieContagieuse').checked,
+                taux_mortalite: 0,
+            });
+            e.target.reset();
+            loadAll();
+        });
+
+        document.getElementById('traitementForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const scoreCarbone = parseFloat(document.getElementById('traitementCarbone').value);
+            
+            const impact = await api('/impacts/', 'POST', {
+                score_carbone: scoreCarbone,
+                consommation_eau: 0,
+                dechets: 0,
+                recyclable: scoreCarbone < 3,
+            });
+            
+            await api('/traitements/', 'POST', {
+                nom_traitement: document.getElementById('traitementNom').value,
+                type_traitement: document.getElementById('traitementType').value,
+                maladie: parseInt(document.getElementById('traitementMaladie').value),
+                cout: parseFloat(document.getElementById('traitementCout').value),
+                duree: parseInt(document.getElementById('traitementDuree').value),
+                efficacite: parseFloat(document.getElementById('traitementEfficacite').value),
+                impact_environnemental: impact.id,
+            });
+            e.target.reset();
+            loadAll();
+        });
+
+        document.getElementById('diagnosticForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await api('/diagnostics/', 'POST', {
+                patient: parseInt(document.getElementById('diagPatient').value),
+                maladie: parseInt(document.getElementById('diagMaladie').value),
+                medecin: parseInt(document.getElementById('diagMedecin').value),
+                notes: document.getElementById('diagNotes').value,
+            });
+            e.target.reset();
+            await loadDiagnostics();
+        });
+
+        // Initialize
+        loadAll();
+    </script>
+</body>
+</html>
